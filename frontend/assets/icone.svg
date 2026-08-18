@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Héstia">
+  <rect width="512" height="512" rx="96" fill="#047857"/>
+  <path d="M256 96 L384 136 v96 c0 88-56 152-128 184 C128 384 72 320 72 232 v-96 z"
+        fill="#ffffff" opacity="0.98"/>
+  <text x="256" y="308" font-family="Arial, Helvetica, sans-serif" font-size="168"
+        font-weight="bold" text-anchor="middle" fill="#047857">H</text>
+</svg>

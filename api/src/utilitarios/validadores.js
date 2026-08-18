@@ -1,36 +1,56 @@
 const validator = require('validator')
 
+const NIVEIS_RISCO = ['verde', 'amarelo', 'vermelho']
+const TIPOS_ANALISE = ['link', 'texto', 'pix']
+
 // Remove espaços extras e escapa caracteres especiais
 function sanitizar(texto) {
   return validator.trim(validator.escape(texto || ''))
 }
 
-// Valida e sanitiza os dados recebidos do formulário de lead
-function validarLead(dados) {
+// Valida e sanitiza uma solicitação de análise de golpe
+function validarAnalise(dados) {
   const erros = []
-  const nome = sanitizar(dados.nome_completo)
-  const email = sanitizar(dados.email)
-  const telefone = sanitizar(dados.telefone_whatsapp)
-  const mensagem = sanitizar(dados.mensagem || '')
+  const tipo = sanitizar(dados.tipo).toLowerCase()
+  const conteudo = sanitizar(dados.conteudo)
 
-  if (!nome || nome.length < 3 || nome.length > 150)
-    erros.push('Nome completo deve ter entre 3 e 150 caracteres.')
+  if (!TIPOS_ANALISE.includes(tipo))
+    erros.push('Tipo de análise inválido. Use "link", "texto" ou "pix".')
 
-  if (!validator.isEmail(email))
-    erros.push('E-mail inválido.')
+  if (conteudo.length < 3)
+    erros.push('Informe o link, texto ou chave Pix (mínimo de 3 caracteres).')
 
-  const apenasDigitos = telefone.replace(/\D/g, '')
-  if (apenasDigitos.length < 10 || apenasDigitos.length > 15)
-    erros.push('Telefone WhatsApp inválido. Informe um número com DDD.')
+  if (conteudo.length > 2000)
+    erros.push('O conteúdo deve ter no máximo 2000 caracteres.')
 
-  if (mensagem.length > 500)
-    erros.push('Mensagem deve ter no máximo 500 caracteres.')
-
-  return {
-    valido: erros.length === 0,
-    erros,
-    dados: { nome_completo: nome, email, telefone_whatsapp: apenasDigitos, mensagem }
-  }
+  return { valido: erros.length === 0, erros, dados: { tipo, conteudo } }
 }
 
-module.exports = { sanitizar, validarLead }
+// Valida e sanitiza um novo alerta de golpe
+function validarAlerta(dados) {
+  const erros = []
+  const titulo = sanitizar(dados.titulo)
+  const descricao = sanitizar(dados.descricao)
+  const regiao = sanitizar(dados.regiao)
+  const categoria = sanitizar(dados.categoria)
+  const nivel = sanitizar(dados.nivel_risco)
+
+  if (!titulo || titulo.length < 5 || titulo.length > 150)
+    erros.push('Título deve ter entre 5 e 150 caracteres.')
+
+  if (!descricao || descricao.length < 10 || descricao.length > 2000)
+    erros.push('Descrição deve ter entre 10 e 2000 caracteres.')
+
+  if (!regiao || regiao.length > 100)
+    erros.push('Informe a região do alerta (máximo 100 caracteres).')
+
+  if (!categoria || categoria.length > 50)
+    erros.push('Informe a categoria do alerta (máximo 50 caracteres).')
+
+  if (!NIVEIS_RISCO.includes(nivel))
+    erros.push('Nível de risco inválido. Use "verde", "amarelo" ou "vermelho".')
+
+  return { valido: erros.length === 0, erros, dados: { titulo, descricao, regiao, categoria, nivel_risco: nivel } }
+}
+
+module.exports = { sanitizar, validarAnalise, validarAlerta }

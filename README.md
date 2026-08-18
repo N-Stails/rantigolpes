@@ -1,217 +1,245 @@
-# Landing Page de Captura de Leads — Sistema Full Stack (Node.js + Express + SQLite)
+# Héstia — Alerta Cidadão (Sistema Full Stack de Prevenção a Golpes)
 
-> **Projeto Acadêmico:** Aplicação Full Stack moderna para captura, validação e armazenamento de *leads* em tempo real.
+> **Projeto Acadêmico (Projeto Integrador):** aplicação Full Stack para triagem de golpes financeiros e digitais — analisa links, mensagens e chaves Pix suspeitas, orienta vítimas e divulga os golpes da semana.
 
 ---
 
 ## 📋 Sobre o Projeto
 
-Este projeto consiste em uma **Landing Page de Alta Conversão** integrada a uma **API RESTful** desenvolvida com Node.js e Express, utilizando o banco de dados leve **SQLite** para persistência de dados.
+O **Héstia (Alerta Cidadão)** ajuda o cidadão a se proteger contra golpes de **Engenharia Social** (Pix, phishing, clonagem e deepfake). O usuário cola um link, texto ou chave Pix suspeita e o sistema realiza uma análise **heurística** em menos de 3 segundos, exibindo um **Semáforo de Risco** (verde/amarelo/vermelho) com os motivos encontrados.
 
-A aplicação foi desenvolvida seguindo boas práticas de arquitetura de software, validação e sanitização de dados, segurança HTTP com Helmet e navegação responsiva sem recarregamento de página (SPA-like via Fetch API).
+O projeto também oferece um **passo a passo pós-golpe** (MED, B.O., troca de senhas) e uma **Central de Alertas** com os golpes mais comuns da semana por região.
+
+A aplicação segue boas práticas de arquitetura de software, segurança HTTP com Helmet, sanitização de entradas, **privacidade/LGPD** (nada do que é analisado é gravado), **acessibilidade cognitiva** (fontes grandes, alto contraste e comandos por voz) e é instalável como **PWA**.
+
+> 📄 O plano de migração completo consta em [`doc/plano_hestia_alerta_cidadao.md`](doc/plano_hestia_alerta_cidadao.md).
 
 ---
 
 ## 🛠️ Tecnologias Utilizadas
 
 ### **Backend (API RESTful)**
-- **Node.js** — Ambiente de execução JavaScript no servidor.
-- **Express.js** — Framework web minimalista e rápido para rotas e middlewares.
+- **Node.js** — Ambiente de execução JavaScript no servidor (v18 LTS).
+- **Express.js** (v5) — Framework web para rotas e middlewares.
 - **better-sqlite3** — Driver síncrono e de alta performance para o banco SQLite.
-- **Helmet** — Middleware para configuração de cabeçalhos de segurança HTTP.
+- **Helmet** — Cabeçalhos de segurança HTTP.
 - **CORS** — Habilitação de Cross-Origin Resource Sharing.
-- **Validator** — Lib para sanitização e validação avançada de e-mails e textos.
+- **Validator** — Sanitização e validação de entradas.
 - **Dotenv** — Gerenciamento de variáveis de ambiente.
 
 ### **Frontend (Interface do Usuário)**
-- **HTML5 Semântico** — Marcação acessível e estruturada.
-- **Tailwind CSS** — Framework CSS utilitário para design responsivo e moderno.
-- **JavaScript ES6+ (Vanilla)** — Lógica do cliente, manipulação do DOM, máscaras de formulário e chamadas assíncronas via `fetch`.
+- **HTML5 Semântico** — Marcação acessível e estruturada (ARIA).
+- **Tailwind CSS** — Framework CSS utilitário responsivo.
+- **JavaScript ES6+ (Módulos ES)** — Navegação por abas (SPA-like via Fetch API), semáforo de risco e Web Speech API.
+- **PWA** — `manifest.webmanifest` + Service Worker para instalação.
 
 ---
 
 ## 📁 Estrutura do Projeto
 
 ```text
-testenodejs/
+rantigolpes/
 ├── api/                          # Servidor Backend em Node.js
 │   ├── db/                       # Banco de dados SQLite (criado em runtime)
-│   │   └── landing.db            # Arquivo da base de dados local
 │   ├── src/
 │   │   ├── config/
-│   │   │   └── conexaoBanco.js   # Inicialização e conexão do SQLite
+│   │   │   ├── conexaoBanco.js   # Conexão do SQLite (WAL + FK)
+│   │   │   └── listaGolpes.js    # Seeds de alertas e guia pós-golpe
 │   │   ├── controladores/
-│   │   │   └── leadControlador.js# Regras de negócio da API
+│   │   │   ├── analiseControlador.js # Triagem heurística (RF1/RF2)
+│   │   │   ├── alertaControlador.js  # Central de alertas (RF4)
+│   │   │   └── guiaControlador.js    # Passo a passo pós-golpe (RF3)
 │   │   ├── rotas/
-│   │   │   └── leadRotas.js      # Endpoints da aplicação
+│   │   │   ├── analiseRotas.js
+│   │   │   ├── alertaRotas.js
+│   │   │   └── guiaRotas.js
 │   │   ├── utilitarios/
-│   │   │   └── validadores.js    # Sanitização e validação dos inputs
+│   │   │   ├── analisadorGolpes.js   # Motor heurístico de risco
+│   │   │   └── validadores.js        # Sanitização e validação dos inputs
 │   │   ├── app.js                # Configuração do Express e Middlewares
 │   │   └── server.js             # Inicialização da porta e servidor
-│   ├── .env                      # Variáveis de ambiente
-│   ├── iniciarBanco.js           # DDL de criação da tabela de leads
+│   ├── .env                      # Variáveis de ambiente (PORT, ORIGEM_PERMITIDA)
+│   ├── .env.example              # Modelo de variáveis de ambiente
+│   ├── iniciarBanco.js           # DDL das tabelas + seeds
 │   └── package.json              # Dependências e scripts do Node.js
 │
-├── frontend/                     # Interface Web (Landing Page)
+├── frontend/                     # Interface Web (App Héstia)
+│   ├── assets/
+│   │   └── icone.svg             # Ícone do PWA
 │   ├── css/
-│   │   └── estilo.css            # Estilos CSS adicionais
+│   │   └── estilo.css            # Tema acessível + alto contraste
 │   ├── js/
-│   │   └── app.js                # Script client-side (máscaras e Fetch API)
-│   └── index.html                # Estrutura visual da Landing Page
+│   │   ├── app.js                # Navegação, acessibilidade, toast
+│   │   ├── analise.js            # Semáforo de risco / análise
+│   │   ├── alertas.js            # Central de alertas
+│   │   ├── guia.js               # Passo a passo pós-golpe
+│   │   └── voz.js                # Web Speech API (entrada e saída)
+│   ├── manifest.webmanifest      # Manifest do PWA
+│   ├── service-worker.js         # Cache offline (API nunca é cacheada)
+│   └── index.html                # Estrutura visual do app
 │
 ├── doc/                          # Documentação técnica do projeto
-│   └── plano_landingpage_nodejs.md
+│   ├── projeto_integrador/       # Documentação acadêmica (análise, requisitos)
+│   └── plano_hestia_alerta_cidadao.md
 │
-├── .gitignore                    # Arquivos ignorados pelo Git
-└── README.md                     # Documentação oficial do repositório
+├── .gitignore
+└── README.md
 ```
 
 ---
 
 ## 🗄️ Modelagem do Banco de Dados (SQLite)
 
-O banco de dados SQLite é inicializado automaticamente na subida da aplicação através do script `iniciarBanco.js`.
+Banco inicializado automaticamente na subida da aplicação (`iniciarBanco.js`).
 
-### **Tabela `leads`**
+### **Tabela `alertas_golpes`** — Central de Alertas (RF4)
 
 ```sql
-CREATE TABLE IF NOT EXISTS leads (
-    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
-    nome_completo       TEXT    NOT NULL,
-    email               TEXT    NOT NULL,
-    telefone_whatsapp   TEXT    NOT NULL,
-    mensagem            TEXT    DEFAULT NULL,
-    data_cadastro       TEXT    DEFAULT (datetime('now','localtime')),
-    status_atendimento  TEXT    DEFAULT 'novo'
-                                CHECK(status_atendimento IN ('novo','contatado','convertido','perdido'))
+CREATE TABLE IF NOT EXISTS alertas_golpes (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    titulo          TEXT NOT NULL,
+    descricao       TEXT NOT NULL,
+    regiao          TEXT NOT NULL,
+    categoria       TEXT NOT NULL,
+    nivel_risco     TEXT NOT NULL CHECK(nivel_risco IN ('verde','amarelo','vermelho')),
+    data_publicacao TEXT DEFAULT (datetime('now','localtime'))
 );
+CREATE INDEX IF NOT EXISTS idx_alertas_regiao ON alertas_golpes(regiao);
+CREATE INDEX IF NOT EXISTS idx_alertas_categoria ON alertas_golpes(categoria);
+```
 
-CREATE INDEX IF NOT EXISTS idx_leads_email ON leads(email);
-CREATE INDEX IF NOT EXISTS idx_leads_status ON leads(status_atendimento);
+### **Tabela `estatisticas_analise`** — métricas anônimas (LGPD / RNF3)
+
+Armazena **apenas metadados** (tipo de entrada, risco e regras atingidas) — nunca o conteúdo analisado:
+
+```sql
+CREATE TABLE IF NOT EXISTS estatisticas_analise (
+    id               INTEGER PRIMARY KEY AUTOINCREMENT,
+    tipo_entrada     TEXT NOT NULL CHECK(tipo_entrada IN ('link','texto','pix')),
+    risco            TEXT NOT NULL CHECK(risco IN ('verde','amarelo','vermelho')),
+    regras_atingidas TEXT DEFAULT NULL,
+    criado_em        TEXT DEFAULT (datetime('now','localtime'))
+);
+CREATE INDEX IF NOT EXISTS idx_estatisticas_risco ON estatisticas_analise(risco);
 ```
 
 ---
 
 ## 🚀 Endpoints da API
 
-| Método | Endpoint | Descrição | Payload (Body) |
+| Método | Endpoint | Descrição | Payload |
 |---|---|---|---|
-| `GET` | `/` | Servidor estático da Landing Page | — |
+| `GET` | `/` | App web (estático) | — |
 | `GET` | `/api/health` | Health Check da API | — |
-| `POST` | `/api/leads` | Cadastra um novo lead | JSON (nome, email, telefone, mensagem) |
-| `GET` | `/api/leads` | Lista todos os leads cadastrados | — |
+| `POST` | `/api/analises` | Triagem heurística (RF1/RF2) | JSON `{ tipo, conteudo }` |
+| `GET` | `/api/alertas` | Alertas da semana por região/categoria | query `?regiao=&categoria=` |
+| `POST` | `/api/alertas` | Cadastra novo alerta (administrativo) | JSON alerta |
+| `GET` | `/api/guia` | Passo a passo pós-golpe (RF3) | — |
 
-### **Exemplo de Requisição `POST /api/leads`**
+### **Exemplo `POST /api/analises`**
 
-**Body (JSON):**
+**Body:**
 ```json
 {
-  "nome_completo": "Maria Silva",
-  "email": "maria.silva@exemplo.com",
-  "telefone_whatsapp": "(11) 98888-7777",
-  "mensagem": "Gostaria de agendar uma demonstração."
+  "tipo": "texto",
+  "conteudo": "URGENTE!!! Você ganhou um prêmio! Confirme seus dados e senha clicando no link."
 }
 ```
 
-**Resposta de Sucesso (HTTP 201):**
+**Resposta (HTTP 200):**
 ```json
 {
   "sucesso": true,
-  "mensagem": "Lead cadastrado com sucesso!"
+  "risco": "vermelho",
+  "regras_atingidas": ["urgencia_ou_pedido", "pedido_dados"],
+  "regras_detalhes": [
+    { "nome": "urgencia_ou_pedido", "descricao": "Contém termos típicos de golpe: urgente, senha" }
+  ],
+  "resumo": "Possíveis sinais de golpe encontrados: ...",
+  "tempo_ms": 1
 }
 ```
 
-**Resposta de Erro de Validação (HTTP 422):**
+**Erro de validação (HTTP 422):**
 ```json
 {
   "sucesso": false,
-  "mensagem": "E-mail inválido.",
-  "erros": [
-    "Informe um endereço de e-mail válido."
-  ]
+  "mensagem": "Dados inválidos.",
+  "erros": ["Tipo de análise inválido. Use \"link\", \"texto\" ou \"pix\"."]
 }
 ```
 
 ---
 
-## 🔧 Como Executar o Projeto no VS Code (Windows & Linux Ubuntu)
+## 🔍 Como Funciona a Análise de Risco
 
-### **Pré-requisitos**
-- **Node.js** (v18 ou superior) e **npm** instalados.
+O motor heurístico (`analisadorGolpes.js`) avalia padrões conhecidos de golpe:
+
+- **Links:** encurtadores (`bit.ly`, `t.ly`...), sem HTTPS, extensões incomuns (`.tk`, `.xyz`...), domínios com números e uso alterado de marcas de bancos/governos.
+- **Textos:** urgência, prêmios, pedido de dados sensíveis (CPF/senha/token), pedidos de pagamento, CAIXA ALTA e exclamações excessivas.
+- **Chaves Pix:** e-mail em domínio suspeito, CPF/telefone válidos (neutro) e instruções suspeitas acompanhando a chave.
+
+A pontuação determina o nível: **0–1 verde**, **2–3 amarelo**, **4+ vermelho**.
+
+---
+
+## 🛡️ Privacidade e LGPD
+
+- **Nenhum conteúdo analisado é persistido** (link, texto ou chave Pix). A análise é efêmera.
+- Apenas métricas anônimas (tipo, risco, regras) são gravadas em `estatisticas_analise`.
+- O Service Worker **não intercepta** requisições à API.
+
+---
+
+## ♿ Acessibilidade Cognitiva (RNF1)
+
+- Fontes grandes com botões **A− / A+** (escala chega a 125%).
+- **Alto contraste** (tema preto/branco com amarelo de destaque).
+- **Voz**: falar em vez de digitar (SpeechRecognition) e leitura dos resultados em voz alta (speechSynthesis).
+- HTML semântico, `aria-live`, foco visível, navegação por teclado e `prefers-reduced-motion`.
+
+---
+
+## 🔧 Como Executar o Projeto (VS Code — Windows & Linux Ubuntu)
+
+### Pré-requisitos
+- **Node.js** (v18 LTS ou superior) e **npm** instalados.
 - **Git** instalado.
 
-> 🐧 **Dica para Linux (Ubuntu/Debian):** Caso precise instalar o Node.js e Git no Ubuntu antes de abrir no VS Code:
+> 🐧 **Linux (Ubuntu/Debian):**
 > ```bash
-> sudo apt update
-> sudo apt install -y nodejs npm git
+> sudo apt update && sudo apt install -y nodejs npm git
 > ```
 
----
+### Iniciar
+```bash
+cd api
+npm install        # necessário na primeira execução
+npm run dev
+```
 
-### 🚀 **Como Iniciar o Projeto (via Terminal do VS Code)**
+### Acessar
+- **App Héstia:** http://localhost:3000/
+- **Health Check:** http://localhost:3000/api/health
 
-1. **Abra a pasta do projeto no VS Code:**
-   - Acesse o menu **Arquivo > Abrir Pasta...** (ou `File > Open Folder...` no Linux) e selecione a pasta `testenodejs`.
-
-2. **Abra o Terminal Integrado do VS Code:**
-   - Pressione o atalho **`Ctrl` + `'`** (ou `Ctrl` + `J` / `Ctrl` + `~`).
-   - Ou acesse o menu superior **Terminal > Novo Terminal**.
-
-3. **Navegue até a pasta `api` e instale as dependências (necessário na primeira execução):**
-   ```bash
-   cd api
-   npm install
-   ```
-
-4. **Inicie o servidor de desenvolvimento:**
-   ```bash
-   npm run dev
-   ```
-
-5. **Acesse a aplicação no navegador:**
-   - **Landing Page:** [http://localhost:3000/](http://localhost:3000/)
-   - **Health Check da API:** [http://localhost:3000/api/health](http://localhost:3000/api/health)
-
----
-
-### 🛑 **Como Parar (Stop) o Servidor**
-
-1. **Método Padrão no VS Code (Windows & Linux Ubuntu):**
-   - Com a janela do terminal integrada focada no VS Code, pressione **`Ctrl` + `C`**.
-   - No Windows, se perguntado `Deseja fechar o arquivo em lote (S/N)?`, digite **`S`** e pressione **Enter**. No Linux, o processo será encerrado imediatamente.
-
-2. **Encerrar pelo Painel de Terminais do VS Code:**
-   - Clique no ícone de **Lixeira 🗑️** no canto superior direito do painel de terminais do VS Code.
-
-3. **Liberar Porta Ocupada (caso receba o erro `EADDRINUSE: address already in use :::3000`):**
-   - **No Linux (Ubuntu/Debian):**
-     ```bash
-     sudo fuser -k 3000/tcp
-     ```
-     *ou:*
-     ```bash
-     npx kill-port 3000
-     ```
-   - **No Windows (PowerShell):**
-     ```powershell
-     Get-NetTCPConnection -LocalPort 3000 -ErrorAction SilentlyContinue | ForEach-Object { Stop-Process -Id $_.OwningProcess -Force }
-     ```
-   - **No Windows (CMD / Git Bash):**
-     ```bash
-     npx kill-port 3000
-     ```
+### Parar o servidor
+- `Ctrl + C` no terminal.
+- Porta ocupada — Linux: `sudo fuser -k 3000/tcp` • Windows: `npx kill-port 3000`
 
 ---
 
 ## 🛡️ Segurança e Boas Práticas
 
-- **Prepared Statements:** Uso de consultas preparadas via `better-sqlite3` prevenindo ataques de **SQL Injection**.
-- **Sanitização de Entradas:** Limpeza de strings com a biblioteca `validator` para evitar inserção de conteúdos maliciosos (**XSS**).
-- **Proteção contra Payload Abusivo:** Middleware configurado com limite de `10kb` por requisição.
-- **Respostas Padronizadas:** Tratamento transparente de erros com códigos HTTP semânticos (200, 201, 400, 422, 500).
+- **Prepared Statements** via `better-sqlite3` (anti SQL Injection).
+- **Sanitização de entradas** com `validator` (anti XSS).
+- **Helmet + CORS + payload limit (10kb)**.
+- **Respostas padronizadas** com códigos HTTP semânticos (200, 201, 400, 422, 500).
+- **Sem persistência de conteúdo sensível** (LGPD).
 
 ---
 
 ## 📜 Licença e Créditos
 
-Projeto desenvolvido para fins educacionais e acadêmicos. Sinta-se à vontade para utilizar como base para seus próprios aprendizados.
+Projeto desenvolvido para fins educacionais e acadêmicos
+(**Integrantes:** Arthur Augusto Matchulevicz; Carlos Eduardo Freitas Côimbra Paixão; Lucas Zoccal Corona; Nicollas Stails Ramos Nogueira — Professor: André Lobo).
+Sinta-se à vontade para utilizar como base para seus próprios aprendizados.

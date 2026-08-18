@@ -1,74 +1,93 @@
-// URL base da API (ajuste se necessário)
-const URL_API = 'http://localhost:3000/api'
+// Héstia — Alerta Cidadão. Ponto de entrada do frontend.
+import { iniciarAnalise } from './analise.js'
+import { iniciarAlertas } from './alertas.js'
+import { iniciarGuia } from './guia.js'
+import { pararFala } from './voz.js'
 
-// Referências do DOM
-const formulario = document.getElementById('formLead')
-const btnEnviar = document.getElementById('btnEnviar')
-const textoBtn = document.getElementById('textoBtn')
-const spinnerBtn = document.getElementById('spinnerBtn')
-const toast = document.getElementById('toast')
-const inputTel = document.getElementById('telefone_whatsapp')
-
-// Aplica máscara de telefone (xx) xxxxx-xxxx
-inputTel.addEventListener('input', function () {
-  let digitos = this.value.replace(/\D/g, '').slice(0, 11)
-  if (digitos.length > 2) digitos = `(${digitos.slice(0, 2)}) ${digitos.slice(2)}`
-  if (digitos.length > 10) digitos = `${digitos.slice(0, 10)}-${digitos.slice(10)}`
-  this.value = digitos
-})
-
-// Exibe toast com mensagem e cor (sucesso/erro)
-function exibirToast(mensagem, tipo) {
-  toast.textContent = mensagem
-  toast.className = `fixed bottom-6 right-6 px-6 py-3 rounded-lg shadow-lg text-white font-semibold transition-all duration-300 z-50 ${tipo === 'sucesso' ? 'bg-green-600' : 'bg-red-600'}`
-  toast.classList.remove('hidden')
-  setTimeout(() => toast.classList.add('hidden'), 4000)
-}
-
-// Alterna estado de carregamento do botão
-function alternarCarregando(ativo) {
-  btnEnviar.disabled = ativo
-  spinnerBtn.classList.toggle('hidden', !ativo)
-  textoBtn.textContent = ativo ? 'Enviando...' : 'Enviar mensagem'
-}
-
-// Função genérica para chamadas Fetch à API
-async function api(método, corpo) {
-  const resposta = await fetch(`${URL_API}/leads`, {
-    method: método,
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(corpo)
-  })
+// Chamada genérica à API (mesmo domínio, servida pelo Express)
+async function api(rota, opcoes = {}) {
+  const resposta = await fetch(`/api${rota}`, opcoes)
   return resposta.json()
 }
 
-// Submissão do formulário via Fetch sem refresh
-formulario.addEventListener('submit', async function (e) {
-  e.preventDefault()
-  if (btnEnviar.disabled) return
+// Toast de feedback (sucesso/erro/info)
+function exibirMensagem(mensagem, tipo = 'info') {
+  let toast = document.getElementById('toast')
+  toast.textContent = mensagem
+  toast.className = `toast toast-${tipo}`
+  toast.hidden = false
+  clearTimeout(exibirMensagem._tempo)
+  exibirMensagem._tempo = setTimeout(() => { toast.hidden = true }, 5000)
+}
 
-  alternarCarregando(true)
+// NAVEGAÇÃO POR ABAS (SPA-like, sem recarregar página)
+const ORDEM_ABAS = ['analise', 'alertas', 'guia', 'sobre']
 
-  try {
-    const dados = {
-      nome_completo: document.getElementById('nome_completo').value.trim(),
-      email: document.getElementById('email').value.trim(),
-      telefone_whatsapp: inputTel.value,
-      mensagem: document.getElementById('mensagem').value.trim()
-    }
+function iniciarNavegacao() {
+  const botoes = document.querySelectorAll('[data-aba]')
+  botoes.forEach((botao) => {
+    botao.addEventListener('click', () => ativarAba(botao.dataset.aba))
+  })
+}
 
-    const resultado = await api('POST', dados)
+function ativarAba(nome) {
+  pararFala()
 
-    if (resultado.sucesso) {
-      exibirToast(resultado.mensagem || 'Os dados do formulário foram enviados com sucesso!', 'sucesso')
-      formulario.reset()
-    } else {
-      const msg = resultado.erros ? resultado.erros.join(' ') : resultado.mensagem
-      exibirToast(msg || 'Erro ao enviar. Tente novamente.', 'erro')
-    }
-  } catch {
-    exibirToast('Erro de conexão com o servidor.', 'erro')
-  } finally {
-    alternarCarregando(false)
-  }
-})
+  document.querySelectorAll('[data-aba]').forEach((b) => {
+    const ativa = b.dataset.aba === nome
+    b.classList.toggle('ativa', ativa)
+    b.setAttribute('aria-selected', String(ativa))
+  })
+
+  document.querySelectorAll('[data-secao]').forEach((secao) => {
+    secao.hidden = secao.id !== `aba-${nome}`
+  })
+
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// ACESSIBILIDADE: tamanho de fonte (RNF1)
+const NIVEIS_FONTE = ['normal', 'grande', 'extra']
+
+function aumentarFonte() {
+  mudarFonte(+1)
+}
+
+function diminuirFonte() {
+  mudarFonte(-1)
+}
+
+function mudarFonte(delta) {
+  const atual = NIVEIS_FONTE.indexOf(document.documentElement.dataset.fonte || 'normal')
+  const proximo = Math.min(NIVEIS_FONTE.length - 1, Math.max(0, atual + delta))
+  document.documentElement.dataset.fonte = NIVEIS_FONTE[proximo]
+}
+
+// ACESSIBILIDADE: alto contraste (RNF1)
+function alternarContraste() {
+  const raiz = document.documentElement
+  raiz.dataset.tema = raiz.dataset.tema === 'alto-contraste' ? 'padrao' : 'alto-contraste'
+  const ativo = raiz.dataset.tema === 'alto-contraste'
+  exibirMensagem(ativo ? 'Alto contraste ativado. Texto com maior destaque e fundo escuro.' : 'Tema padrão restaurado.', 'info')
+}
+
+function iniciarAcessibilidade() {
+  document.getElementById('btnFonteMais').addEventListener('click', aumentarFonte)
+  document.getElementById('btnFonteMenos').addEventListener('click', diminuirFonte)
+  document.getElementById('btnContraste').addEventListener('click', alternarContraste)
+}
+
+// Tenta registrar o Service Worker (PWA offline básico — opcional)
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./service-worker.js').catch(() => { /* opcional */ })
+}
+
+// BINDING INICIAL (módulo ES roda após o DOM ser parseado)
+iniciarNavegacao()
+iniciarAcessibilidade()
+iniciarAnalise(api)
+iniciarAlertas()
+iniciarGuia()
+
+// Expõe o toast para os módulos de seção (import circular resolvido por bindings vivos)
+export { exibirMensagem, api }
