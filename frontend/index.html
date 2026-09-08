@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-tema="padrao" data-fonte="normal">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Héstia — Alerta Cidadão. Analise links, mensagens e chaves Pix suspeitas e descubra se é golpe antes de se prejudicar.">
+  <meta name="theme-color" content="#047857">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icone.svg" type="image/svg+xml">
+  <title>Héstia — Alerta Cidadão</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="css/estilo.css">
+</head>
+<body class="font-sans antialiased">
+
+  <header class="sticky top-0 z-40 bg-emerald-700 text-white shadow-md" data-tema-rigido>
+    <div class="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-3 min-w-0">
+        <span class="text-3xl leading-none" aria-hidden="true">🛡️</span>
+        <div class="min-w-0">
+          <h1 class="text-xl font-extrabold leading-tight tracking-tight">Héstia</h1>
+          <p class="text-xs text-emerald-100">Alerta Cidadão • prevenção a golpes</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1 shrink-0" role="group" aria-label="Ajustes de acessibilidade">
+        <button id="btnFonteMenos" class="btn-acesso" type="button" aria-label="Diminuir o tamanho do texto" title="Diminuir fonte">A−</button>
+        <button id="btnFonteMais" class="btn-acesso" type="button" aria-label="Aumentar o tamanho do texto" title="Aumentar fonte">A+</button>
+        <button id="btnContraste" class="btn-acesso" type="button" aria-label="Alternar alto contraste" title="Alto contraste">◐</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="sticky top-[64px] z-30 bg-white border-b border-gray-100 shadow-sm" aria-label="Seções do aplicativo" data-tema-rigido>
+    <div class="max-w-3xl mx-auto grid grid-cols-4 text-center" role="tablist">
+      <button class="aba ativa" data-aba="analise" role="tab" aria-selected="true" aria-controls="aba-analise">
+        <span class="text-xl" aria-hidden="true">🔍</span>
+        <span class="text-sm font-semibold">Analisar</span>
+      </button>
+      <button class="aba" data-aba="alertas" role="tab" aria-selected="false" aria-controls="aba-alertas">
+        <span class="text-xl" aria-hidden="true">📢</span>
+        <span class="text-sm font-semibold">Alertas</span>
+      </button>
+      <button class="aba" data-aba="guia" role="tab" aria-selected="false" aria-controls="aba-guia">
+        <span class="text-xl" aria-hidden="true">🆘</span>
+        <span class="text-sm font-semibold">Guia</span>
+      </button>
+      <button class="aba" data-aba="sobre" role="tab" aria-selected="false" aria-controls="aba-sobre">
+        <span class="text-xl" aria-hidden="true">ℹ️</span>
+        <span class="text-sm font-semibold">Sobre</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="max-w-3xl mx-auto px-4 py-6 pb-16">
+
+    <!-- ABA ANÁLISE -->
+    <section id="aba-analise" data-secao role="tabpanel" aria-labelledby="titulo-analise" class="mt-2">
+      <h2 id="titulo-analise" class="text-2xl md:text-3xl font-extrabold text-slate-900">Descubra se é golpe</h2>
+      <p class="mt-2 text-gray-600">
+        Cole aqui o link, a mensagem ou a chave Pix que você recebeu.
+        <strong>Nada do que você colar será salvo</strong> — sua privacidade é respeitada (LGPD).
+      </p>
+
+      <form id="formAnalise" class="card mt-5 space-y-4" novalidate>
+        <div>
+          <label for="tipo" class="block text-base font-semibold text-slate-800 mb-1">O que você quer analisar?</label>
+          <select id="tipo" name="tipo" class="campo">
+            <option value="link">Link de site ou página</option>
+            <option value="texto">Mensagem / texto recebido</option>
+            <option value="pix">Chave Pix</option>
+            <option value="telefone">Telefone</option>
+            <option value="email">E-mail</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="conteudo" class="block text-base font-semibold text-slate-800 mb-1">Conteúdo suspeito</label>
+          <textarea id="conteudo" name="conteudo" rows="5" maxlength="2000"
+            placeholder="Cole aqui o link, a mensagem, chave Pix, telefone ou e-mail..."
+            class="campo resize-y" aria-describedby="contador-conteudo"></textarea>
+          <div class="mt-1 flex items-center justify-between gap-2 flex-wrap">
+            <span id="contadorConteudo" class="text-sm text-gray-500">0 / 2000</span>
+            <button id="btnVozEntrada" type="button" class="btn-secundario" aria-label="Falar texto em vez de digitar" title="Usar voz">
+              🎤 Falar em vez de digitar
+            </button>
+          </div>
+        </div>
+
+        <button id="btnAnalisar" type="submit" class="btn-primario w-full">
+          <span id="textoBtnAnalisar">Analisar agora</span>
+        </button>
+      </form>
+
+      <!-- Semáforo de risco (resultado) -->
+      <div id="resultado" class="hidden mt-6 card text-center p-8" aria-live="polite" role="status">
+        <div id="semaforo" class="semaforo mx-auto" data-risco="">
+          <span id="semaforoSimbulo" class="semaforo-simbulo" aria-hidden="true">?</span>
+        </div>
+        <h3 id="resultadoTitulo" class="mt-5 text-2xl font-extrabold text-slate-900">—</h3>
+        <p id="resultadoResumo" class="mt-3 text-lg text-gray-700"></p>
+        <ul id="resultadoMotivos" class="mt-4 text-left text-gray-600 space-y-1"></ul>
+        <p id="resultadoTempo" class="mt-4 text-sm text-gray-500"></p>
+      </div>
+    </section>
+
+    <!-- ABA ALERTAS -->
+    <section id="aba-alertas" data-secao role="tabpanel" aria-labelledby="titulo-alertas" class="mt-2" hidden>
+      <h2 id="titulo-alertas" class="text-2xl md:text-3xl font-extrabold text-slate-900">Alertas da semana</h2>
+      <p class="mt-2 text-gray-600">Os golpes mais comuns circulando agora. Filtre pela sua região para se proteger com antecedência.</p>
+
+      <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <label for="filtroRegiao" class="block text-base font-semibold text-slate-800 mb-1">Região</label>
+          <select id="filtroRegiao" class="campo">
+            <option value="">Todas as regiões</option>
+          </select>
+        </div>
+        <div>
+          <label for="filtroCategoria" class="block text-base font-semibold text-slate-800 mb-1">Categoria</label>
+          <select id="filtroCategoria" class="campo">
+            <option value="">Todas as categorias</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="listaAlertas" class="mt-6 space-y-4"></div>
+      <p id="estadoAlertas" class="text-center text-gray-500 py-8">Carregando alertas...</p>
+    </section>
+
+    <!-- ABA GUIA -->
+    <section id="aba-guia" data-secao role="tabpanel" aria-labelledby="titulo-guia" class="mt-2" hidden>
+      <h2 id="titulo-guia" class="text-2xl md:text-3xl font-extrabold text-slate-900">Você caiu em um golpe?</h2>
+      <p class="mt-2 text-gray-600">
+        Acontece com muita gente, e você não tem culpa. Siga os passos abaixo na ordem:
+        eles ajudam a tentar reaver seu dinheiro e protegem seus dados.
+        <strong class="text-emerald-700">Nenhuma informação sua fica salva aqui.</strong>
+      </p>
+      <div id="etapasGuia" class="mt-6 space-y-3"></div>
+    </section>
+
+    <!-- ABA SOBRE -->
+    <section id="aba-sobre" data-secao role="tabpanel" aria-labelledby="titulo-sobre" class="mt-2" hidden>
+      <h2 id="titulo-sobre" class="text-2xl md:text-3xl font-extrabold text-slate-900">Sobre o Héstia</h2>
+      <p class="mt-2 text-gray-600">
+        O Héstia (Alerta Cidadão) é um projeto acadêmico (Projeto Integrador) de prevenção a golpes
+        financeiros e digitais, com foco em pessoas idosas, jovens e consumidores em geral.
+      </p>
+
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <article class="card p-5">
+          <div class="text-3xl" aria-hidden="true">🔒</div>
+          <h3 class="mt-2 text-lg font-bold text-slate-900">Privacidade em primeiro lugar</h3>
+          <p class="mt-1 text-gray-600">O conteúdo que você analisa jamais é armazenado. Só métricas anônimas de risco são usadas para melhorar o serviço.</p>
+        </article>
+        <article class="card p-5">
+          <div class="text-3xl" aria-hidden="true">🧓</div>
+          <h3 class="mt-2 text-lg font-bold text-slate-900">Feito para todos</h3>
+          <p class="mt-1 text-gray-600">Fontes grandes, alto contraste e comandos por voz para que idosos e pessoas com dificuldade visual analisem golpes sem depender de ninguém.</p>
+        </article>
+        <article class="card p-5">
+          <div class="text-3xl" aria-hidden="true">🚨</div>
+          <h3 class="mt-2 text-lg font-bold text-slate-900">Engenharia Social</h3>
+          <p class="mt-1 text-gray-600">Mais de 90% dos ataques exploram urgência, medo ou ganância. O semáforo de risco ajuda a parar antes de clicar.</p>
+        </article>
+        <article class="card p-5">
+          <div class="text-3xl" aria-hidden="true">📋</div>
+          <h3 class="mt-2 text-lg font-bold text-slate-900">Onde buscar ajuda</h3>
+          <ul class="mt-1 text-gray-600 list-disc list-inside space-y-1">
+            <li>Seu banco: Mecanismo Especial de Devolução (MED)</li>
+            <li>Delegacia Eletrônica da sua região (B.O.)</li>
+            <li>Procon e canais oficiais de cada instituição</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="assertive" hidden></div>
+
+  <footer class="bg-emerald-800 text-emerald-100 text-center py-6 px-4 mt-4">
+    <p class="text-sm max-w-2xl mx-auto">
+      Héstia — Alerta Cidadão • Projeto Integrador.
+      Nada do que você analisa é salvo. Em caso de golpe, acione seu banco (MED) e registre um B.O.
+    </p>
+  </footer>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
