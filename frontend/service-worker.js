@@ -1,8 +1,9 @@
 // Héstia — Service Worker simples (PWA)
 // Estratégia: cache-first para estáticos, network-only para a API (privacidade dos dados)
-const CACHE = 'hestia-v1'
-const ESTATICOS = ['./', './index.html', './css/estilo.css', './js/app.js',
+const CACHE = 'hestia-v17'
+const ESTATICOS = ['./', './index.html', './admin.html', './css/estilo.css', './assets/bandeira-brasil.svg', './assets/bandeira-eua.svg', './assets/bandeira-espanha.svg', './js/app.js',
   './js/analise.js', './js/alertas.js', './js/guia.js', './js/voz.js',
+  './js/i18n.js', './js/analytics.js', './js/admin.js',
   './manifest.webmanifest', './assets/icone.svg']
 
 self.addEventListener('install', (evento) => {

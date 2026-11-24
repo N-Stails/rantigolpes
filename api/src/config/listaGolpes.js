@@ -59,20 +59,20 @@ const alertasIniciais = [
 
 const guiaPosGolpe = [
   {
-    titulo: 'Mantenha a calma e reúna os registros',
-    descricao: 'Guarde comprovantes, prints, contatos e números usados no golpe. Eles são essenciais para o banco e a polícia.'
+    titulo: 'Mantenha a calma e determine o que aconteceu',
+    descricao: 'Se recebeu uma mensagem suspeita, não forneça dados nem clique em links. Se abriu um link, não insira informações e use outro dispositivo confiável para verificar sua conta.'
   },
   {
-    titulo: 'Bloqueie seus cartões e contas',
-    descricao: 'Entre no aplicativo do seu banco ou ligue para a central oficial (número no verso do cartão) e bloqueie imediatamente cartões e acessos.'
+    titulo: 'Proteja contas e dados imediatamente',
+    descricao: 'Se informou uma senha, altere-a por dispositivo confiável e ative a verificação em duas etapas. Se recebeu malware ou teve a conta comprometida, bloqueie cartões e sessões pelos canais oficiais.'
   },
   {
-    titulo: 'Acione o MED (Mecanismo Especial de Devolução)',
-    descricao: 'Abrir o MED no seu banco aumenta as chances de reaver o valor do Pix. Faça isso o quanto antes após a ocorrência.'
+    titulo: 'Conteste Pix pela instituição financeira',
+    descricao: 'Para fraude ou indevido uso de Pix, procure o banco pelos canais oficiais e solicite análise do MED. O MED é exclusivo do Pix, a elegibilidade depende dos critérios aplicáveis e a solicitação em casos elegíveis pode ser feita em até 80 dias após a ocorrência; não garante devolução.'
   },
   {
-    titulo: 'Troque todas as suas senhas',
-    descricao: 'Altere senhas de e-mail, banco e redes sociais, sempre de outro dispositivo. Ative a verificação em duas etapas.'
+    titulo: 'Troque senhas e revise acessos',
+    descricao: 'Comece pelo e-mail vinculado ao banco, depois redes sociais e serviços financeiros. Revogue sessões desconhecidas e confirme alterações pelos canais oficiais.'
   },
   {
     titulo: 'Registre um Boletim de Ocorrência',

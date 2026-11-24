@@ -1,16 +1,47 @@
 // Héstia — aba Guia: passo a passo pós-golpe (RF3)
 import { falar } from './voz.js'
+import { t, formatarNumero } from './i18n.js'
+import { registrarEvento } from './analytics.js'
+import { idiomaAtual } from './i18n.js'
 
 let listaEtapas, progressoEl
+let ouvindoMudancaIdioma = false
+const CHAVE_CONCLUIDOS = 'hestia.guide.completed'
+
+function carregarConcluidos() {
+  try {
+    const valor = JSON.parse(localStorage.getItem(CHAVE_CONCLUIDOS) || '[]')
+    return Array.isArray(valor) ? new Set(valor) : new Set()
+  } catch {
+    return new Set()
+  }
+}
+
+function salvarConcluidos() {
+  const checks = [...listaEtapas.querySelectorAll('input[type="checkbox"][data-passo]')]
+  const concluidos = checks.filter((check) => check.checked).map((check) => check.dataset.passo)
+  localStorage.setItem(CHAVE_CONCLUIDOS, JSON.stringify(concluidos))
+}
 
 export async function iniciarGuia() {
   listaEtapas = document.getElementById('etapasGuia')
-  progressoEl = document.createElement('p')
-  progressoEl.className = 'card text-center text-lg font-semibold text-gray-700'
-  listaEtapas.parentNode.insertBefore(progressoEl, listaEtapas)
+  if (!progressoEl) {
+    progressoEl = document.createElement('p')
+    progressoEl.className = 'card text-center text-lg font-semibold text-gray-700'
+    listaEtapas.parentNode.insertBefore(progressoEl, listaEtapas)
+  }
+  if (!ouvindoMudancaIdioma) {
+    ouvindoMudancaIdioma = true
+    document.addEventListener('hestia:idioma', () => {
+      listaEtapas.innerHTML = ''
+      iniciarGuia()
+    })
+  }
 
   try {
-    const resposta = await fetch('/api/guia')
+    const resposta = await fetch('/api/guia', {
+      headers: { 'Accept-Language': idiomaAtual() }
+    })
     const dados = await resposta.json()
     const passos = dados.sucesso ? dados.dados : []
 
@@ -18,7 +49,7 @@ export async function iniciarGuia() {
     passos.forEach((passo, indice) => listaEtapas.appendChild(renderizarPasso(passo, indice + 1)))
     atualizarProgresso()
   } catch {
-    progressoEl.textContent = 'Não foi possível carregar o guia. Tente novamente em instantes.'
+    progressoEl.textContent = t('guide.error')
   }
 }
 
@@ -45,9 +76,12 @@ function renderizarPasso(passo, numero) {
   const btnVoz = document.createElement('button')
   btnVoz.type = 'button'
   btnVoz.className = 'btn-secundario'
-  btnVoz.textContent = '🔊 Ouvir'
-  btnVoz.setAttribute('aria-label', `Ouvir o passo: ${passo.titulo}`)
-  btnVoz.addEventListener('click', () => falar(`Passo ${numero}. ${passo.titulo}. ${passo.descricao}`))
+  btnVoz.innerHTML = `<span aria-hidden="true">🔊</span> ${t('guide.listen')}`
+  btnVoz.setAttribute('aria-label', `${t('guide.listenStep')} ${passo.titulo}`)
+  btnVoz.addEventListener('click', () => {
+    registrarEvento('guide_step_listened', 'guia', { step: numero })
+    falar(`${t('guide.step')} ${formatarNumero(numero)}. ${passo.titulo}. ${passo.descricao}`)
+  })
 
   cabecalho.appendChild(h3)
   cabecalho.appendChild(btnVoz)
@@ -62,14 +96,22 @@ function renderizarPasso(passo, numero) {
   const check = document.createElement('input')
   check.type = 'checkbox'
   check.className = 'w-6 h-6 accent-emerald-700'
-  check.addEventListener('change', atualizarProgresso)
+  check.dataset.passo = String(numero)
+  check.checked = carregarConcluidos().has(String(numero))
+  check.addEventListener('change', () => {
+    salvarConcluidos()
+    atualizarTextoChecklist(check)
+    atualizarProgresso()
+  })
 
   const textoCheck = document.createElement('span')
   textoCheck.className = 'text-gray-700 font-medium'
-  textoCheck.textContent = 'Passo feito ✅'
+  textoCheck.textContent = t(check.checked ? 'guide.done' : 'guide.todo')
+  textoCheck.dataset.checklistLabel = String(numero)
 
   rotulo.appendChild(check)
   rotulo.appendChild(textoCheck)
+  atualizarTextoChecklist(check)
 
   corpo.appendChild(cabecalho)
   corpo.appendChild(p)
@@ -85,8 +127,16 @@ function atualizarProgresso() {
   const feitos = [...checks].filter((c) => c.checked).length
   const total = checks.length
   progressoEl.textContent = total === 0
-    ? 'Carregando passos...'
+    ? t('guide.loading')
     : feitos === total
-      ? `🎉 Você completou todos os ${total} passos! Busque o banco (MED) e a polícia o quanto antes.`
-      : `Progresso: ${feitos} de ${total} passos concluídos.`
+      ? `🎉 ${t('guide.completed')}`
+      : `${t('guide.progress')} ${formatarNumero(feitos)} ${t('guide.of')} ${formatarNumero(total)}`
+}
+
+function atualizarTextoChecklist(check) {
+  const rotulo = check.parentElement.querySelector('[data-checklist-label]')
+  if (!rotulo) return
+  rotulo.textContent = check.checked ? `✓ ${t('guide.done')}` : t('guide.todo')
+  rotulo.classList.toggle('text-emerald-700', check.checked)
+  check.setAttribute('aria-label', check.checked ? t('guide.done') : t('guide.todo'))
 }

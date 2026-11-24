@@ -1,5 +1,6 @@
 // Héstia — módulo de acessibilidade por voz (RNF1)
 // Entrada: Web Speech API (SpeechRecognition) • Saída: speechSynthesis
+import { localeId } from './i18n.js'
 
 const temEntradaVoz = 'SpeechRecognition' in window || 'webkitSpeechRecognition' in window
 const temSaidaVoz = 'speechSynthesis' in window
@@ -16,7 +17,7 @@ export function suportaSaidaVoz() {
 export function falar(texto) {
   if (!temSaidaVoz || !texto) return false
   const u = new SpeechSynthesisUtterance(texto)
-  u.lang = 'pt-BR'
+  u.lang = localeId()
   u.rate = 0.95
   u.pitch = 1
   speechSynthesis.cancel()
@@ -38,7 +39,7 @@ export function iniciarEscuta(aoTranscrever, aoEstado) {
 
   const Reconhecimento = window.SpeechRecognition || window.webkitSpeechRecognition
   reconhecedor = new Reconhecimento()
-  reconhecedor.lang = 'pt-BR'
+  reconhecedor.lang = localeId()
   reconhecedor.continuous = false
   reconhecedor.interimResults = true
 
@@ -54,7 +55,9 @@ export function iniciarEscuta(aoTranscrever, aoEstado) {
   }
   reconhecedor.onstart = () => aoEstado && aoEstado(true)
   reconhecedor.onend = () => { if (aoEstado) aoEstado(false) }
-  reconhecedor.onerror = () => { if (aoEstado) aoEstado(false) }
+  reconhecedor.onerror = (evento) => {
+    if (aoEstado) aoEstado(false, evento?.error || 'unknown')
+  }
 
   reconhecedor.start()
   return true

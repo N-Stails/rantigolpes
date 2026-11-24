@@ -218,6 +218,24 @@ npm install        # necessário na primeira execução
 npm run dev
 ```
 
+### Internacionalização e analytics
+
+- Idiomas disponíveis: português (PT-BR), inglês (EN) e espanhol (ES).
+- O idioma é detectado no primeiro acesso e pode ser alterado pelo seletor no cabeçalho.
+- A troca de idioma usa botões com bandeiras: Brasil (PT-BR), Estados Unidos (EN) e Espanha (ES).
+- A preferência, fonte e contraste ficam salvos localmente no navegador.
+- Analytics são ativados somente após consentimento. O usuário pode revogá-lo na aba **Sobre**.
+- Dados analíticos são armazenados no SQLite sem endereço IP, conteúdo analisado, senhas, tokens ou dados de pagamento.
+- A retenção padrão é de 90 dias; configure `ANALYTICS_RETENTION_DAYS` no arquivo `.env`.
+
+### Painel administrativo
+
+1. Defina `HESTIA_ADMIN_TOKEN` no `.env` da API.
+2. Acesse `http://localhost:3000/admin.html`.
+3. Informe o token no campo solicitado.
+
+O painel apresenta visitantes, recorrentes, eventos, páginas, dispositivos, navegadores, sistemas e idiomas. Sem o token configurado, o endpoint administrativo retorna indisponível.
+
 ### Acessar
 - **App Héstia:** http://localhost:3000/
 - **Health Check:** http://localhost:3000/api/health

@@ -10,7 +10,6 @@ function securityLogger(req, res, next) {
       logger.access({
         method: req.method,
         path: req.path,
-        ip: req.ip,
         status: res.statusCode,
         duration_ms: duration
       });
