@@ -187,7 +187,7 @@ A pontuação determina o nível: **0–1 verde**, **2–3 amarelo**, **4+ verme
 
 - **Nenhum conteúdo analisado é persistido** (link, texto ou chave Pix). A análise é efêmera.
 - Apenas métricas anônimas (tipo, risco, regras) são gravadas em `estatisticas_analise`.
-- O Service Worker **não intercepta** requisições à API.
+- O Service Worker intercepta a API **apenas para avisar quando não há conexão**; nenhuma análise ou alerta em tempo real é colocado em cache. O guia estático de prevenção continua disponível offline.
 
 ---
 
@@ -217,6 +217,13 @@ cd api
 npm install        # necessário na primeira execução
 npm run dev
 ```
+
+### GitHub Pages (somente frontend)
+
+- O workflow `.github/workflows/deploy.yml` publica `frontend/` em `https://<usuario>.github.io/rantigolpes/` a cada push em `main`. Não há etapa de build: o projeto é HTML/CSS/JS puro e todos os caminhos (inclusive `start_url`/`scope` do manifesto e o registro do Service Worker) são relativos ao base path do repositório.
+- GitHub Pages não executa Node.js/SQLite. Sem backend configurado, o app usa os snapshots estáticos de `frontend/api/` e o analisador heurístico local de `frontend/js/analisadorLocal.js`; analytics e painel administrativo ficam indisponíveis.
+- Para apontar para uma API real, edite `frontend/api-config.js`: `window.HESTIA_API_BASE = 'https://seu-backend/api'` (com CORS habilitado).
+- Ative em **Settings → Pages → Build and deployment → Source: GitHub Actions**.
 
 ### Internacionalização e analytics
 

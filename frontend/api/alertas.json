@@ -1,0 +1,179 @@
+{
+  "sucesso": true,
+  "dados": {
+    "pt-BR": [
+      {
+        "titulo": "Falso investimento em criptomoedas",
+        "descricao": "Golpistas prometem rendimentos altos e garantidos com criptomoedas, exigindo depósitos via Pix. Nenhum investimento legítimo garante lucro fixo.",
+        "regiao": "Brasil",
+        "categoria": "investimento",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Falsa central de atendimento bancário",
+        "descricao": "Ligações se passando pelo banco pedem confirmação de dados ou instalação de aplicativos. O banco nunca pede senha ou token por telefone.",
+        "regiao": "Brasil",
+        "categoria": "phishing",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Falso emprego home-office",
+        "descricao": "Vagas com salários muito altos e cobranças de taxa para \"garantir\" a contratação. Empregos legítimos não cobram nada do candidato.",
+        "regiao": "Brasil",
+        "categoria": "emprego",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Pix bloqueado por \"erro de cadastro\"",
+        "descricao": "Mensagens dizem que seu Pix foi bloqueado e pedem \"atualização de dados\" por link. O banco não atualiza dados por link enviado por SMS ou WhatsApp.",
+        "regiao": "Brasil",
+        "categoria": "pix",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Prêmio ou sorteio falso no WhatsApp",
+        "descricao": "Mensagens afirmam que você ganhou um prêmio e solicitam dados pessoais ou pagamento de taxa para liberar o valor. Desconfie de prêmios não solicitados.",
+        "regiao": "Brasil",
+        "categoria": "sorteio",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Golpe do \"falso sequestro\" com voz clonada",
+        "descricao": "Uso de IA para clonar a voz de familiares pedindo dinheiro de emergência. Combine uma palavra-código com a família para confirmar chamadas.",
+        "regiao": "Brasil",
+        "categoria": "engenharia-social",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Falsas promoções de lojas clonadas",
+        "descricao": "Anúncios patrocinados em redes sociais levam a lojas falsas com preços imbatíveis. Confira o domínio e o CNPJ antes de pagar.",
+        "regiao": "Centro-Oeste",
+        "categoria": "clonagem",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Golpe da falsa vaga no INSS",
+        "descricao": "Supostos atendentes do INSS pedem dados ou depósitos para \"desbloquear\" aposentadoria. O INSS não liga pedindo Pix nem senha.",
+        "regiao": "Centro-Oeste",
+        "categoria": "phishing",
+        "nivel_risco": "vermelho"
+      }
+    ],
+    "en": [
+      {
+        "titulo": "Fake cryptocurrency investment",
+        "descricao": "Scammers promise high guaranteed cryptocurrency returns and demand Pix deposits. No legitimate investment guarantees fixed profit.",
+        "regiao": "Brasil",
+        "categoria": "investimento",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Fake bank customer service",
+        "descricao": "Calls impersonating a bank ask for confirmation of data or installation of apps. Banks never request passwords or tokens by phone.",
+        "regiao": "Brasil",
+        "categoria": "phishing",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Fake remote job",
+        "descricao": "Job offers with very high salaries ask for a fee to guarantee hiring. Legitimate employers do not charge candidates.",
+        "regiao": "Brasil",
+        "categoria": "emprego",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Pix blocked by a “registration error”",
+        "descricao": "Messages say your Pix account is blocked and ask you to update data through a link. Banks do not update data through SMS or WhatsApp links.",
+        "regiao": "Brasil",
+        "categoria": "pix",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Fake prize or raffle on WhatsApp",
+        "descricao": "Messages claim you won a prize and ask for personal data or a fee. Be suspicious of unsolicited prizes.",
+        "regiao": "Brasil",
+        "categoria": "sorteio",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Fake kidnapping scam with a cloned voice",
+        "descricao": "AI is used to clone a relative’s voice and request emergency money. Use a family code word to confirm calls.",
+        "regiao": "Brasil",
+        "categoria": "engenharia-social",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Fake promotions from cloned stores",
+        "descricao": "Sponsored social media ads lead to fake stores with unbelievable prices. Check the domain and tax ID before paying.",
+        "regiao": "Centro-Oeste",
+        "categoria": "clonagem",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Fake INSS job or benefit scam",
+        "descricao": "People posing as INSS agents ask for data or deposits to “unlock” retirement benefits. INSS does not call requesting Pix or passwords.",
+        "regiao": "Centro-Oeste",
+        "categoria": "phishing",
+        "nivel_risco": "vermelho"
+      }
+    ],
+    "es": [
+      {
+        "titulo": "Falsa inversión en criptomonedas",
+        "descricao": "Los estafadores prometen altos rendimientos garantizados y exigen depósitos por Pix. Ninguna inversión legítima garantiza una ganancia fija.",
+        "regiao": "Brasil",
+        "categoria": "investimento",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Falsa central de atención bancaria",
+        "descricao": "Llamadas que se hacen pasar por el banco solicitan datos o instalación de aplicaciones. El banco nunca pide contraseñas o tokens por teléfono.",
+        "regiao": "Brasil",
+        "categoria": "phishing",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Falsa oferta de empleo remoto",
+        "descricao": "Ofertas con salarios muy altos cobran una tasa para “garantizar” la contratación. Los empleos legítimos no cobran al candidato.",
+        "regiao": "Brasil",
+        "categoria": "emprego",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Pix bloqueado por un “error de registro”",
+        "descricao": "Los mensajes dicen que su Pix está bloqueado y solicitan actualizar datos mediante un enlace. El banco no actualiza datos por enlaces de SMS o WhatsApp.",
+        "regiao": "Brasil",
+        "categoria": "pix",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Falso premio o sorteo en WhatsApp",
+        "descricao": "Los mensajes dicen que ganó un premio y solicitan datos personales o una tasa. Desconfíe de premios no solicitados.",
+        "regiao": "Brasil",
+        "categoria": "sorteio",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Estafa de falso secuestro con voz clonada",
+        "descricao": "Se usa IA para clonar la voz de familiares y pedir dinero de emergencia. Use una palabra clave acordada para confirmar llamadas.",
+        "regiao": "Brasil",
+        "categoria": "engenharia-social",
+        "nivel_risco": "vermelho"
+      },
+      {
+        "titulo": "Falsas promociones de tiendas clonadas",
+        "descricao": "Anuncios patrocinados llevan a tiendas falsas con precios irreales. Comprueba el dominio y el CNPJ antes de pagar.",
+        "regiao": "Centro-Oeste",
+        "categoria": "clonagem",
+        "nivel_risco": "amarelo"
+      },
+      {
+        "titulo": "Estafa de falsa oferta del INSS",
+        "descricao": "Supuestos agentes del INSS solicitan datos o depósitos para desbloquear una jubilación. El INSS no pide Pix ni contraseñas por teléfono.",
+        "regiao": "Centro-Oeste",
+        "categoria": "phishing",
+        "nivel_risco": "vermelho"
+      }
+    ]
+  }
+}

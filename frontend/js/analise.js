@@ -109,7 +109,7 @@ export function iniciarAnalise(api) {
       exibirResultado(resultado)
       registrarEvento('analysis_completed', 'analise', { risk: resultado.risco, type: tipoEl.value })
     } catch {
-      exibirMensagem(t('analysis.connection'), 'erro')
+      exibirMensagem(t(navigator.onLine ? 'analysis.connection' : 'analysis.offline'), 'erro')
     } finally {
       alternarCarregando(false)
       formulario.removeAttribute('aria-busy')

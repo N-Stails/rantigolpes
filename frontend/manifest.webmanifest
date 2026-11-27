@@ -1,19 +1,47 @@
 {
-  "name": "Héstia — Alerta Cidadão",
+  "id": "./",
+  "name": "Héstia - Prevenção de Golpes",
   "short_name": "Héstia",
-  "description": "Analise links, mensagens e chaves Pix suspeitas e descubra se é golpe. Acessível, privado e sem julgamentos.",
+  "description": "Proteção inteligente e prevenção contra golpes digitais.",
   "lang": "pt-BR",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
-  "background_color": "#047857",
+  "orientation": "portrait",
   "theme_color": "#047857",
+  "background_color": "#065f46",
+  "categories": ["utilities", "security"],
   "icons": [
     {
       "src": "assets/icone.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icone-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icone-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icone-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/icone-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }

@@ -1,0 +1,83 @@
+{
+  "sucesso": true,
+  "dados": {
+    "pt-BR": [
+      {
+        "titulo": "Mantenha a calma e determine o que aconteceu",
+        "descricao": "Se recebeu uma mensagem suspeita, não forneça dados nem clique em links. Se abriu um link, não insira informações e use outro dispositivo confiável para verificar sua conta."
+      },
+      {
+        "titulo": "Proteja contas e dados imediatamente",
+        "descricao": "Se informou uma senha, altere-a por dispositivo confiável e ative a verificação em duas etapas. Se recebeu malware ou teve a conta comprometida, bloqueie cartões e sessões pelos canais oficiais."
+      },
+      {
+        "titulo": "Conteste Pix pela instituição financeira",
+        "descricao": "Para fraude ou indevido uso de Pix, procure o banco pelos canais oficiais e solicite análise do MED. O MED é exclusivo do Pix, a elegibilidade depende dos critérios aplicáveis e a solicitação em casos elegíveis pode ser feita em até 80 dias após a ocorrência; não garante devolução."
+      },
+      {
+        "titulo": "Troque senhas e revise acessos",
+        "descricao": "Comece pelo e-mail vinculado ao banco, depois redes sociais e serviços financeiros. Revogue sessões desconhecidas e confirme alterações pelos canais oficiais."
+      },
+      {
+        "titulo": "Registre um Boletim de Ocorrência",
+        "descricao": "Faça o B.O. pela Delegacia Eletrônica da sua região ou presencialmente. Leve todos os comprovantes e detalhes da conversa."
+      },
+      {
+        "titulo": "Denuncie a página, o número e o canal",
+        "descricao": "Reporte o perfil, o número de WhatsApp ou a página usada no golpe para a plataforma. Isso ajuda a proteger outras pessoas."
+      }
+    ],
+    "en": [
+      {
+        "titulo": "Stay calm and identify what happened",
+        "descricao": "If you received a suspicious message, do not provide data or click links. If you opened a link, do not enter information and check your account from another trusted device."
+      },
+      {
+        "titulo": "Protect accounts and data immediately",
+        "descricao": "If you disclosed a password, change it from a trusted device and enable two-factor authentication. If your account was compromised, block cards and sessions through official channels."
+      },
+      {
+        "titulo": "Contact your financial institution about the Pix",
+        "descricao": "For possible fraud or unauthorized use of Pix, contact your bank through official channels and request assessment of the Special Refund Mechanism (MED). MED is Pix-only, eligibility depends on applicable criteria, eligible requests may be made within 80 days after the event, and a request does not guarantee recovery."
+      },
+      {
+        "titulo": "Change passwords and review access",
+        "descricao": "Start with the email linked to the bank, then social media and financial services. Revoke unknown sessions and verify changes through official channels."
+      },
+      {
+        "titulo": "File a police report",
+        "descricao": "Keep evidence and file a report through the electronic police station in your region or in person."
+      },
+      {
+        "titulo": "Report the page, number and channel",
+        "descricao": "Report the profile, WhatsApp number or page used by the scammer to the platform and official consumer channels."
+      }
+    ],
+    "es": [
+      {
+        "titulo": "Mantenga la calma y determine qué ocurrió",
+        "descricao": "Si recibió un mensaje sospechoso, no facilite datos ni haga clic en enlaces. Si abrió un enlace, no introduzca información y revise su cuenta desde otro dispositivo confiable."
+      },
+      {
+        "titulo": "Proteja cuentas y datos de inmediato",
+        "descricao": "Si reveló una contraseña, cámbiela desde un dispositivo confiable y active la autenticación en dos pasos. Si la cuenta fue comprometida, bloquee tarjetas y sesiones por canales oficiales."
+      },
+      {
+        "titulo": "Contacte a la institución financiera por el Pix",
+        "descricao": "En caso de fraude o uso indebido de Pix, contacte al banco por canales oficiales y solicite evaluación del Mecanismo Especial de Devolución (MED). El MED es exclusivo de Pix, la elegibilidad depende de criterios aplicables y en casos elegibles la solicitud puede hacerse hasta 80 días después; no garantiza devolución."
+      },
+      {
+        "titulo": "Cambie contraseñas y revise accesos",
+        "descricao": "Comience por el correo vinculado al banco y continúe con redes sociales y servicios financieros. Revise sesiones desconocidas y confirme cambios por canales oficiales."
+      },
+      {
+        "titulo": "Registre una denuncia",
+        "descricao": "Haga la denuncia por la delegación electrónica de su región o presencialmente. Lleve comprobantes y detalles."
+      },
+      {
+        "titulo": "Denuncie la página, número y canal",
+        "descricao": "Reporte el perfil, número de WhatsApp o página usada en la estafa a la plataforma."
+      }
+    ]
+  }
+}

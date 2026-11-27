@@ -1,4 +1,5 @@
 import { idiomaAtual } from './i18n.js'
+import { urlApi, MODO_ESTATICO } from './config.js'
 
 const CONSENT_KEY = 'hestia.analytics.consent'
 const SESSION_KEY = 'hestia.analytics.session'
@@ -17,9 +18,9 @@ function obterConsentimento() {
 }
 
 async function enviar(payload) {
-  if (obterConsentimento() !== 'accepted') return
+  if (MODO_ESTATICO || obterConsentimento() !== 'accepted') return
   try {
-    await fetch('/api/analytics/events', {
+    await fetch(urlApi('/analytics/events'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'X-Hestia-Language': idiomaAtual() },
       body: JSON.stringify(payload),
@@ -76,8 +77,8 @@ export function registrarEvento(tipo, pagina, detalhes = {}) {
 
 export function revogarConsentimento() {
   const sessao = sessionStorage.getItem(SESSION_KEY)
-  if (sessao) {
-    fetch('/api/analytics/revoke', {
+  if (sessao && !MODO_ESTATICO) {
+    fetch(urlApi('/analytics/revoke'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ sessao }),

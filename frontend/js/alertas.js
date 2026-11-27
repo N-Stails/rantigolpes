@@ -2,6 +2,7 @@
 import { falar } from './voz.js'
 import { t, formatarData, formatarNumero, idiomaAtual } from './i18n.js'
 import { registrarEvento } from './analytics.js'
+import { urlApi, MODO_ESTATICO } from './config.js'
 
 const NIVEL_ALERTA = {
   verde:    { rotulo: 'risk.low',  classe: 'bg-green-100 text-green-800 border-green-300' },
@@ -44,11 +45,22 @@ async function carregar() {
   if (ordenarEl?.value) params.set('ordenar', ordenarEl.value)
 
   try {
-    const resposta = await fetch(`/api/alertas?${params.toString()}`, {
+    const endpoint = MODO_ESTATICO
+      ? urlApi('/alertas.json')
+      : urlApi(`/alertas?${params.toString()}`)
+    const resposta = await fetch(endpoint, {
       headers: { 'Accept-Language': idiomaAtual() }
     })
     const dados = await resposta.json()
-    const alertas = dados.sucesso ? dados.dados : []
+    if (dados.offline) {
+      estadoEl.textContent = t('alerts.offline')
+      return
+    }
+    let alertas = dados.sucesso ? dados.dados : []
+    if (MODO_ESTATICO) {
+      const lista = Array.isArray(alertas) ? alertas : (alertas[idiomaAtual()] || alertas['pt-BR'] || [])
+      alertas = filtrarAlertas(lista, params)
+    }
 
     preencherFiltros(alertas)
 
@@ -60,11 +72,29 @@ async function carregar() {
     estadoEl.classList.add('hidden')
     alertas.forEach((alerta) => listaAh.appendChild(renderizarAlerta(alerta)))
   } catch {
-    estadoEl.textContent = t('alerts.error')
+    estadoEl.textContent = t(navigator.onLine ? 'alerts.error' : 'alerts.offline')
   }
 }
 
-// Preenche os filtros dinamicamente com os dados existentes
+function filtrarAlertas(lista, params) {
+  const regiao = params.get('regiao') || ''
+  const categoria = params.get('categoria') || ''
+  const busca = (params.get('q') || '').toLowerCase()
+
+  let itens = lista.filter((alerta) =>
+    (!regiao || alerta.regiao === regiao) &&
+    (!categoria || alerta.categoria === categoria) &&
+    (!busca || [alerta.titulo, alerta.descricao, alerta.categoria, alerta.regiao]
+      .some((valor) => String(valor || '').toLowerCase().includes(busca)))
+  )
+
+  if (params.get('ordenar') === 'gravidade') {
+    const ordem = { vermelho: 0, amarelo: 1, verde: 2 }
+    itens = [...itens].sort((a, b) => (ordem[a.nivel_risco] ?? 3) - (ordem[b.nivel_risco] ?? 3))
+  }
+  return itens.slice(0, 50)
+}
+
 function preencherFiltros(alertas) {
   const regioes = [...new Set(alertas.map((a) => a.regiao))].sort()
   const categorias = [...new Set(alertas.map((a) => a.categoria))].sort()

@@ -1,4 +1,5 @@
 import { aplicarIdioma, idiomaAtual, t, formatarNumero } from './i18n.js'
+import { urlApi, MODO_ESTATICO } from './config.js'
 
 aplicarIdioma(idiomaAtual())
 document.title = `${t('admin.title')} — ${t('app.title')}`
@@ -27,8 +28,13 @@ document.getElementById('formAdmin').addEventListener('submit', async (evento) =
   const erro = document.getElementById('erroAdmin')
   const container = document.getElementById('metricasAdmin')
   erro.textContent = ''
+  if (MODO_ESTATICO) {
+    container.hidden = true
+    erro.textContent = t('admin.error')
+    return
+  }
   try {
-    const resposta = await fetch(`/api/analytics/metrics?periodo=${encodeURIComponent(periodo)}`, {
+    const resposta = await fetch(urlApi(`/analytics/metrics?periodo=${encodeURIComponent(periodo)}`), {
       headers: { Authorization: `Bearer ${token}` }
     })
     const dados = await resposta.json()

@@ -3,8 +3,9 @@ import { falar } from './voz.js'
 import { t, formatarNumero } from './i18n.js'
 import { registrarEvento } from './analytics.js'
 import { idiomaAtual } from './i18n.js'
+import { urlApi, MODO_ESTATICO } from './config.js'
 
-let listaEtapas, progressoEl
+let listaEtapas, progressoEl, avisoOfflineEl
 let ouvindoMudancaIdioma = false
 const CHAVE_CONCLUIDOS = 'hestia.guide.completed'
 
@@ -39,17 +40,32 @@ export async function iniciarGuia() {
   }
 
   try {
-    const resposta = await fetch('/api/guia', {
+    const endpoint = MODO_ESTATICO ? urlApi('/guia.json') : urlApi('/guia')
+    const resposta = await fetch(endpoint, {
       headers: { 'Accept-Language': idiomaAtual() }
     })
     const dados = await resposta.json()
-    const passos = dados.sucesso ? dados.dados : []
+    if (dados.offline) {
+      if (!avisoOfflineEl) {
+        avisoOfflineEl = document.createElement('p')
+        avisoOfflineEl.className = 'card text-sm text-gray-600'
+        avisoOfflineEl.setAttribute('role', 'status')
+        listaEtapas.parentNode.insertBefore(avisoOfflineEl, progressoEl)
+      }
+      avisoOfflineEl.textContent = t('guide.offline')
+    } else if (avisoOfflineEl) {
+      avisoOfflineEl.remove()
+      avisoOfflineEl = null
+    }
+    const passos = MODO_ESTATICO
+      ? (dados.dados?.[idiomaAtual()] || dados.dados?.['pt-BR'] || [])
+      : (dados.sucesso ? dados.dados : [])
 
     if (passos.length === 0) return
     passos.forEach((passo, indice) => listaEtapas.appendChild(renderizarPasso(passo, indice + 1)))
     atualizarProgresso()
   } catch {
-    progressoEl.textContent = t('guide.error')
+    progressoEl.textContent = t(navigator.onLine ? 'guide.error' : 'guide.offline')
   }
 }
 

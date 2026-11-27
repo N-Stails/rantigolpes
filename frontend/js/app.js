@@ -5,15 +5,18 @@ import { iniciarGuia } from './guia.js'
 import { pararFala } from './voz.js'
 import { aplicarIdioma, idiomaAtual, t } from './i18n.js'
 import { iniciarAnalytics, registrarVisita, registrarEvento, revogarConsentimento } from './analytics.js'
+import { urlApi, urlApp, MODO_ESTATICO } from './config.js'
+import { analisarLocal } from './analisadorLocal.js'
 
-// Chamada genérica à API (mesmo domínio, servida pelo Express)
 async function api(rota, opcoes = {}) {
+  if (MODO_ESTATICO && rota === '/analises') {
+    const corpo = JSON.parse(opcoes.body || '{}')
+    return analisarLocal(corpo.tipo, corpo.conteudo)
+  }
   const cabecalho = new Headers(opcoes.headers || {})
   cabecalho.set('Accept-Language', idiomaAtual())
-  const resposta = await fetch(`/api${rota}`, { ...opcoes, headers: cabecalho })
-  const dados = await resposta.json().catch(() => ({ sucesso: false }))
-  if (!resposta.ok) return dados
-  return dados
+  const resposta = await fetch(urlApi(rota), { ...opcoes, headers: cabecalho })
+  return resposta.json().catch(() => ({ sucesso: false }))
 }
 
 // Toast de feedback (sucesso/erro/info)
@@ -152,9 +155,14 @@ function restaurarPreferencias() {
   }
 }
 
-// Tenta registrar o Service Worker (PWA offline básico — opcional)
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker.js').catch(() => { /* opcional */ })
+  navigator.serviceWorker.register(urlApp('service-worker.js'))
+    .then((registro) => {
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') registro.update().catch(() => {})
+      })
+    })
+    .catch(() => {})
 }
 
 // BINDING INICIAL (módulo ES roda após o DOM ser parseado)

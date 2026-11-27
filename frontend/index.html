@@ -4,13 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Héstia — Alerta Cidadão. Analise links, mensagens e chaves Pix suspeitas e descubra se é golpe antes de se prejudicar.">
+  <meta name="application-name" content="Héstia">
   <meta name="theme-color" content="#047857">
   <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Héstia">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="assets/icone.svg" type="image/svg+xml">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./assets/icone.svg">
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/icone-192.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="./assets/icone-192.png">
   <title>Héstia — Alerta Cidadão</title>
-  <link rel="stylesheet" href="css/estilo.css">
+  <link rel="stylesheet" href="./css/estilo.css">
 </head>
 <body class="font-sans antialiased">
 
@@ -234,6 +239,7 @@
     </p>
   </footer>
 
-  <script type="module" src="js/app.js"></script>
+  <script src="./api-config.js"></script>
+  <script type="module" src="./js/app.js"></script>
 </body>
 </html>
